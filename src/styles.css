@@ -1,0 +1,28 @@
+/* You can add global styles to this file, and also import other style files */
+
+:root {
+  --bg: #ffffff;
+  --fg: #0f172a; /* slate-900 */
+  --muted: #475569; /* slate-600 */
+  --border: #e5e7eb; /* gray-200 */
+}
+
+html[data-theme='dark'] {
+  --bg: #0b1220;
+  --fg: #e5e7eb;
+  --muted: #94a3b8;
+  --border: #1f2937;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--fg);
+}
+
+a { color: inherit; }
+
+header, nav {
+  border-color: var(--border) !important;
+}
+
+table th, table td { color: var(--fg); }
