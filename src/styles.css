@@ -1,17 +1,27 @@
 /* You can add global styles to this file, and also import other style files */
 
 :root {
+  /* Light: branco + verde vívido */
   --bg: #ffffff;
-  --fg: #0f172a; /* slate-900 */
-  --muted: #475569; /* slate-600 */
-  --border: #e5e7eb; /* gray-200 */
+  --fg: #0b0f0c; /* quase preto, levemente esverdeado */
+  --muted: #14532d; /* verde escuro para textos secundários */
+  --border: #e6f4eb; /* branco com leve verde */
+  --surface: #f4fff8; /* branco esverdeado para superfícies */
+  --accent: #22c55e; /* verde vívido */
+  --accent-contrast: #ffffff;
+  --accent-ghost: rgba(34, 197, 94, 0.12);
 }
 
 html[data-theme='dark'] {
-  --bg: #0b1220;
-  --fg: #e5e7eb;
-  --muted: #94a3b8;
-  --border: #1f2937;
+  /* Dark: preto + verde */
+  --bg: #0a0f0a; /* preto esverdeado */
+  --fg: #e6f6eb; /* texto claro com leve verde */
+  --muted: #9ae6b4; /* verde claro para secundário */
+  --border: #12351e; /* borda verde bem escura */
+  --surface: #0f1711; /* superfície um pouco mais clara que o bg */
+  --accent: #22c55e; /* mantém verde vívido */
+  --accent-contrast: #05210f; /* texto no botão em dark pode ser escuro? manteremos branco via botão */
+  --accent-ghost: rgba(34, 197, 94, 0.2);
 }
 
 html, body {
@@ -20,6 +30,27 @@ html, body {
 }
 
 a { color: inherit; }
+
+button {
+  appearance: none;
+  border: 1px solid transparent;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  padding: .45rem .75rem;
+  border-radius: .5rem;
+  cursor: pointer;
+}
+button:hover { filter: brightness(1.05); }
+button:disabled { opacity: .6; cursor: not-allowed; }
+
+input, select {
+  background: var(--surface);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: .5rem;
+  padding: .45rem .5rem;
+}
+input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
 
 header, nav {
   border-color: var(--border) !important;

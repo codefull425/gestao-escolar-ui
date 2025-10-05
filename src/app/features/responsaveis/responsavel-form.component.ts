@@ -10,7 +10,7 @@ import { ResponsavelRequest } from '../../types/api.models';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
   template: `
-    <a routerLink="/responsaveis">← Voltar</a>
+    <a routerLink="/">← Voltar</a>
     <h2 style="margin-top:0;">{{ isEdit() ? 'Editar Responsável' : 'Novo Responsável' }}</h2>
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()" style="display:grid;gap:0.75rem;max-width:560px;">

@@ -11,7 +11,7 @@ import { AlunoRequest, AlunoResponse, ResponsavelResponse } from '../../types/ap
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
   template: `
-    <a routerLink="/alunos">← Voltar</a>
+    <a routerLink="/">← Voltar</a>
     <h2 style="margin-top:0;">{{ isEdit() ? 'Editar Aluno' : 'Novo Aluno' }}</h2>
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()" style="display:grid;gap:0.75rem;max-width:560px;">

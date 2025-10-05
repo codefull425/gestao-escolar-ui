@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 
 export const appRoutes: Routes = [
-  { path: '', redirectTo: 'alunos', pathMatch: 'full' },
+  { path: '', loadComponent: () => import('./features/home/home.component').then(m => m.HomeComponent) },
   {
     path: 'alunos',
     loadComponent: () => import('./features/alunos/alunos-list.component').then(m => m.AlunosListComponent)
@@ -26,6 +26,7 @@ export const appRoutes: Routes = [
     path: 'responsaveis/:id',
     loadComponent: () => import('./features/responsaveis/responsavel-form.component').then(m => m.ResponsavelFormComponent)
   },
+  { path: '**', redirectTo: '' }
 ];
 
 

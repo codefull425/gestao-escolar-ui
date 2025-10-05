@@ -1,8 +1,6 @@
 import { RenderMode, ServerRoute } from '@angular/ssr';
 
 export const serverRoutes: ServerRoute[] = [
-  {
-    path: '**',
-    renderMode: RenderMode.Prerender
-  }
+  // Force purely client rendering to avoid server-side HTTP fetch issues during dev/prerender
+  { path: '**', renderMode: RenderMode.Client },
 ];
