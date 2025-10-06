@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ResponsavelRequest, ResponsavelResponse } from '../types/api.models';
+import { AlunoResponse, ResponsavelRequest, ResponsavelResponse } from '../types/api.models';
 
 const API_BASE = 'http://localhost:8080';
 
@@ -11,6 +11,10 @@ export class ResponsaveisService {
 
   list(): Observable<ResponsavelResponse[]> {
     return this.http.get<ResponsavelResponse[]>(`${API_BASE}/responsaveis`);
+  }
+
+  listWithAlunos(id: string): Observable<AlunoResponse[]> {
+    return this.http.get<AlunoResponse[]>(`${API_BASE}/responsaveis/${id}/alunos`);
   }
 
   get(id: string): Observable<ResponsavelResponse> {
