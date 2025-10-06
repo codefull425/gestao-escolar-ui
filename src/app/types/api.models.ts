@@ -13,6 +13,7 @@ export interface ResponsavelRequest {
   email: string;
   telefone: string;
   ativo?: boolean;
+  alunoIds?: string[];
 }
 
 export interface AlunoResponse {

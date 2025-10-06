@@ -4,7 +4,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FeedbackModalComponent } from '../../components/feedback-modal.component';
 import { ResponsaveisService } from '../../services/responsaveis.service';
-import { ResponsavelRequest } from '../../types/api.models';
+import { AlunosService } from '../../services/alunos.service';
+import { AlunoResponse, ResponsavelRequest } from '../../types/api.models';
 
 @Component({
   selector: 'app-responsavel-form',
@@ -21,6 +22,12 @@ import { ResponsavelRequest } from '../../types/api.models';
         <div class="form-error" *ngIf="submitted && form.controls.nome.invalid">
           O nome é obrigatório e deve ter até 120 caracteres.
         </div>
+      </label>
+      <label>
+        <div>Alunos</div>
+        <select formControlName="alunoIds" multiple size="5" style="width:100%;">
+          <option *ngFor="let a of alunos()" [value]="a.id">{{ a.nome }} - {{ a.matricula }}</option>
+        </select>
       </label>
       <label>
         <div>CPF</div>
@@ -69,6 +76,7 @@ export class ResponsavelFormComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly nfb = this.fb.nonNullable;
   private readonly service = inject(ResponsaveisService);
+  private readonly alunosService = inject(AlunosService);
   private readonly route = inject(ActivatedRoute);
   protected readonly router = inject(Router);
   private readonly cdr = inject(ChangeDetectorRef);
@@ -81,6 +89,7 @@ export class ResponsavelFormComponent implements OnInit {
   protected modalTitle = '';
   protected modalMessage = '';
   protected modalOk = false;
+  protected readonly alunos = signal<AlunoResponse[]>([]);
 
   private readonly emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
 
@@ -89,10 +98,12 @@ export class ResponsavelFormComponent implements OnInit {
     cpf: this.nfb.control('', [Validators.required, Validators.maxLength(11), Validators.minLength(11)]),
     email: this.nfb.control('', [Validators.required, Validators.maxLength(120), Validators.pattern(this.emailPattern)]),
     telefone: this.nfb.control('', [Validators.required, Validators.maxLength(20)]),
-    ativo: this.nfb.control(true)
+    ativo: this.nfb.control(true),
+    alunoIds: this.nfb.control<string[]>([])
   });
 
   ngOnInit(): void {
+    this.alunosService.list().subscribe(this.alunos.set);
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEdit.set(true);
@@ -105,6 +116,11 @@ export class ResponsavelFormComponent implements OnInit {
           telefone: r.telefone,
           ativo: r.ativo
         });
+        // If API returns related alunos, map to ids; otherwise, leave empty
+        const maybeAlunos: any = (r as any).alunos;
+        if (Array.isArray(maybeAlunos)) {
+          this.form.controls.alunoIds.setValue(maybeAlunos.map((a: any) => a.id));
+        }
       });
     }
   }
