@@ -118,8 +118,17 @@ export class ResponsavelFormComponent implements OnInit {
     const obs = id ? this.service.update(id, payload) : this.service.create(payload);
     obs.subscribe({
       next: () => { this.saving.set(false); this.modalOpen = true; this.modalOk = true; this.modalTitle = 'Sucesso'; this.modalMessage = 'Responsável salvo com sucesso.'; this.cdr.markForCheck(); },
-      error: () => { this.saving.set(false); this.modalOpen = true; this.modalOk = false; this.modalTitle = 'Erro'; this.modalMessage = 'Não foi possível salvar o responsável.'; this.cdr.markForCheck(); }
+      error: (err) => { this.saving.set(false); this.modalOpen = true; this.modalOk = false; this.modalTitle = `Erro ${err?.status ?? ''}`.trim(); this.modalMessage = this.extractErrorMessage(err) || 'Não foi possível salvar o responsável.'; this.cdr.markForCheck(); }
     });
+  }
+
+  private extractErrorMessage(err: any): string {
+    const e = err?.error;
+    const raw = typeof e === 'string' ? e : (typeof e?.message === 'string' ? e.message : (typeof err?.message === 'string' ? err.message : ''));
+    if (raw && raw.toLowerCase().includes('duplicate entry')) {
+      return 'esse CPF já foi cadastrado';
+    }
+    return raw;
   }
 
   onDelete(): void {
