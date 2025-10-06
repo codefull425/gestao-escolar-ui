@@ -9,10 +9,11 @@ import { AlunoResponse } from '../../types/api.models';
   standalone: true,
   imports: [CommonModule, RouterLink],
   template: `
-    <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem;">
+    <a routerLink="/" class="btn btn-outline">← Voltar</a>
+    <div style="display:flex;align-items:center;gap:0.5rem;margin:0.5rem 0 1rem 0;">
       <h2 style="margin:0;">Alunos</h2>
       <span style="flex:1 1 auto"></span>
-      <a routerLink="/alunos/novo">Novo</a>
+      <a routerLink="/alunos/novo" class="btn">Novo aluno</a>
     </div>
     <table style="width:100%;border-collapse:collapse;">
       <thead>
