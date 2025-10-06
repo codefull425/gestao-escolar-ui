@@ -39,3 +39,31 @@ Front‑end em **Angular 20** com **Angular Material**. Este projeto é a interf
 
 ## Página de formulario de novo responsavel
 <img src="./img/formulario de novo responsavel.png" alt="Tela principal do sistema" width="700"/>
+
+
+
+### Clonar o repositório do GitHub
+```bash
+git clone https://github.com/codefull425/gestao-escolar-ui
+```
+
+### Navegue para a pasta gestaoEscolar
+```bash
+cd gestao-escolar-ui/gestao-escolar-ui
+```
+
+### Gerar pacote 
+```bash
+npm install
+```
+
+### Rodar a aplicação
+```bash
+ng serve
+```
+### Porta
+```bash
+A aplicação rodará na porta localhost:4200
+```
+
+---
