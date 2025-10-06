@@ -49,7 +49,7 @@ import { AlunoResponse } from '../../types/api.models';
 })
 export class AlunosListComponent implements OnInit {
   private readonly service = inject(AlunosService);
-  private readonly router = inject(Router);
+  protected readonly router = inject(Router);
   protected readonly alunos = signal<AlunoResponse[]>([]);
   protected modalOpen = false;
   protected selectedAluno: AlunoResponse | null = null;
