@@ -49,7 +49,7 @@ git clone https://github.com/codefull425/gestao-escolar-ui
 
 ### Navegue para a pasta gestaoEscolar
 ```bash
-cd gestao-escolar-ui/gestao-escolar-ui
+cd gestao-escolar-ui
 ```
 
 ### Gerar pacote 
