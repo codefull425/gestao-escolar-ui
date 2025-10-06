@@ -13,7 +13,7 @@ import { ResponsavelResponse } from '../../types/api.models';
     <div style="display:flex;align-items:center;gap:0.5rem;margin:0.5rem 0 1rem 0;">
       <h2 style="margin:0;">Responsáveis</h2>
       <span style="flex:1 1 auto"></span>
-      <a routerLink="/responsaveis/novo" class="btn">Novo</a>
+      <a routerLink="/responsaveis/novo" class="btn">Novo Responsável</a>
     </div>
     <table style="width:100%;border-collapse:collapse;">
       <thead>

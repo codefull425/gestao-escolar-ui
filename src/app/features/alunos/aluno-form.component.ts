@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnInit, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, effect, inject, signal, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { FeedbackModalComponent } from '../../components/feedback-modal.component';
 import { AlunosService } from '../../services/alunos.service';
 import { ResponsaveisService } from '../../services/responsaveis.service';
 import { AlunoRequest, AlunoResponse, ResponsavelResponse } from '../../types/api.models';
@@ -9,7 +10,7 @@ import { AlunoRequest, AlunoResponse, ResponsavelResponse } from '../../types/ap
 @Component({
   selector: 'app-aluno-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, FeedbackModalComponent],
   template: `
     <a routerLink="/">← Voltar</a>
     <h2 style="margin-top:0;">{{ isEdit() ? 'Editar Aluno' : 'Novo Aluno' }}</h2>
@@ -18,10 +19,18 @@ import { AlunoRequest, AlunoResponse, ResponsavelResponse } from '../../types/ap
       <label>
         <div>Nome</div>
         <input formControlName="nome" />
+        <div class="form-error" *ngIf="submitted && form.controls.nome.errors as e">
+          <ng-container *ngIf="e['required']">Nome é obrigatório.</ng-container>
+          <ng-container *ngIf="e['maxlength']">No máximo 120 caracteres.</ng-container>
+        </div>
       </label>
       <label>
         <div>Matrícula</div>
         <input formControlName="matricula" />
+        <div class="form-error" *ngIf="submitted && form.controls.matricula.errors as e">
+          <ng-container *ngIf="e['required']">Matrícula é obrigatória.</ng-container>
+          <ng-container *ngIf="e['maxlength']">No máximo 30 caracteres.</ng-container>
+        </div>
       </label>
       <label>
         <div>Data de Nascimento</div>
@@ -38,10 +47,18 @@ import { AlunoRequest, AlunoResponse, ResponsavelResponse } from '../../types/ap
       </label>
 
       <div style="display:flex;gap:0.5rem;">
-        <button type="submit" [disabled]="form.invalid || saving()">Salvar</button>
+        <button class="btn" type="submit" >Salvar</button>
         <button type="button" (click)="onDelete()" *ngIf="isEdit()">Excluir</button>
       </div>
     </form>
+    <app-feedback-modal
+      [open]="modalOpen"
+      [title]="modalTitle"
+      [message]="modalMessage"
+      [ok]="modalOk"
+      (confirm)="router.navigate(['/alunos'])"
+      (close)="modalOpen=false">
+    </app-feedback-modal>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -51,12 +68,18 @@ export class AlunoFormComponent implements OnInit {
   private readonly alunos = inject(AlunosService);
   private readonly responsaveisSrv = inject(ResponsaveisService);
   private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
+  protected readonly router = inject(Router);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   protected readonly isEdit = signal(false);
   protected readonly saving = signal(false);
+  protected submitted = false;
   protected readonly responsaveis = signal<ResponsavelResponse[]>([]);
   protected readonly alunoId = signal<string | null>(null);
+  protected modalOpen = false;
+  protected modalTitle = '';
+  protected modalMessage = '';
+  protected modalOk = false;
 
   form = this.nfb.group({
     nome: this.nfb.control('', [Validators.required, Validators.maxLength(120)]),
@@ -85,14 +108,15 @@ export class AlunoFormComponent implements OnInit {
   }
 
   onSubmit(): void {
+    this.submitted = true;
     if (this.form.invalid) return;
     this.saving.set(true);
     const payload: AlunoRequest = this.form.getRawValue();
     const id = this.alunoId();
     const obs = id ? this.alunos.update(id, payload) : this.alunos.create(payload);
     obs.subscribe({
-      next: () => this.router.navigate(['/alunos']),
-      error: () => this.saving.set(false)
+      next: () => { this.saving.set(false); this.modalOpen = true; this.modalOk = true; this.modalTitle = 'Sucesso'; this.modalMessage = 'Aluno salvo com sucesso.'; this.cdr.markForCheck(); },
+      error: () => { this.saving.set(false); this.modalOpen = true; this.modalOk = false; this.modalTitle = 'Erro'; this.modalMessage = 'Não foi possível salvar o aluno.'; this.cdr.markForCheck(); }
     });
   }
 
