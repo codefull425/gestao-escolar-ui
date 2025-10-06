@@ -32,7 +32,10 @@ Front‑end em **Angular 20** com **Angular Material**. Este projeto é a interf
 <img src="./img/pagina de detalhes do aluno.png" alt="Tela principal do sistema" width="700"/>
 
 ## Página de detalhes de responsaveis
-<img src="./img/pagina de detalhes de responsaveis .png" alt="Tela principal do sistema" width="700"/>
+<img src="./img/pagina de detalhes de responsaveis.png" alt="Tela principal do sistema" width="700"/>
 
 ## Página de formulario de novo aluno
-<img src="./img/formulario de novo aluno .png" alt="Tela principal do sistema" width="700"/>
+<img src="./img/foemulario de novo aluno.png" alt="Tela principal do sistema" width="700"/>
+
+## Página de formulario de novo responsavel
+<img src="./img/formulario de novo responsavel.png" alt="Tela principal do sistema" width="700"/>
