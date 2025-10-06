@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, effect, inject, signal, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FeedbackModalComponent } from '../../components/feedback-modal.component';
 import { AlunosService } from '../../services/alunos.service';
@@ -44,6 +44,9 @@ import { AlunoRequest, AlunoResponse, ResponsavelResponse } from '../../types/ap
         <select formControlName="responsavelIds" multiple size="5" style="width:100%;">
           <option *ngFor="let r of responsaveis()" [value]="r.id">{{ r.nome }} - {{ r.cpf }}</option>
         </select>
+        <div class="form-error" *ngIf="submitted && form.controls.responsavelIds.errors as e">
+          <ng-container *ngIf="e['required'] || e['minSelected']">Selecione ao menos um responsável.</ng-container>
+        </div>
       </label>
 
       <div style="display:flex;gap:0.5rem;">
@@ -86,7 +89,7 @@ export class AlunoFormComponent implements OnInit {
     matricula: this.nfb.control('', [Validators.required, Validators.maxLength(30)]),
     dataNascimento: this.nfb.control(''),
     ativo: this.nfb.control(true),
-    responsavelIds: this.nfb.control<string[]>([])
+    responsavelIds: this.nfb.control<string[]>([], { validators: [Validators.required, this.minSelected(1)] })
   });
 
   ngOnInit(): void {
@@ -107,15 +110,27 @@ export class AlunoFormComponent implements OnInit {
     }
   }
 
+  private minSelected(min: number) {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value as unknown;
+      const list = Array.isArray(value) ? value : [];
+      return list.length >= min ? null : { minSelected: { required: min, actual: list.length } };
+    };
+  }
+
   onSubmit(): void {
     this.submitted = true;
+    this.form.markAllAsTouched();
+    this.form.updateValueAndValidity({ onlySelf: false, emitEvent: false });
+    this.form.controls.responsavelIds.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+    this.cdr.markForCheck();
     if (this.form.invalid) return;
     this.saving.set(true);
     const payload: AlunoRequest = this.form.getRawValue();
     const id = this.alunoId();
     const obs = id ? this.alunos.update(id, payload) : this.alunos.create(payload);
     obs.subscribe({
-      next: () => { this.saving.set(false); this.modalOpen = true; this.modalOk = true; this.modalTitle = 'Sucesso'; this.modalMessage = 'Aluno salvo com sucesso.'; this.cdr.markForCheck(); },
+      next: () => { this.saving.set(false); this.modalOpen = true; this.modalOk = true; this.modalTitle = 'Sucesso'; this.modalMessage = 'Aluno salvo com sucesso.';this.cdr.markForCheck(); },
       error: (err) => { this.saving.set(false); this.modalOpen = true; this.modalOk = false; this.modalTitle = `Erro ${err?.status ?? ''}`.trim(); this.modalMessage = this.extractErrorMessage(err) || 'Não foi possível salvar o aluno.'; this.cdr.markForCheck(); }
     });
   }
